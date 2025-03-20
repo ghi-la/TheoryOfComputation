@@ -1,0 +1,29 @@
+# Alphabeth {0,1}
+# Language {0^n 1^m or 1^m 0^n | m=n}
+
+# Accepted Inputs: 01 001110 111011010000 010011
+# Rejected Inputs: 0 01110 010 11000
+input: '001110' 
+blank: ' '
+start state: start
+table:
+  start:
+    0: {write: 'x', R: have0}
+    1: {write: 'y', R: have1}
+    # Last check:
+    [x,y] : R
+    ' ' : {L: accept}
+  have0:
+    [0,x,y] : R
+    1: {write: 'y', L: back}
+    ' ' : {R: reject}
+  have1:
+    [1,x,y] : R
+    0: {write: 'x', L: back}
+    ' ' : {R: reject}
+  back:
+    [0,1,x,y] : L
+    ' ': {R: start}
+  accept:
+  
+  reject:

@@ -1,0 +1,148 @@
+# Alphabeth {a, ..., f, #, |}
+
+# Accepted Inputs: 
+#   ace|deb#a#ace#cad
+#   dace|cafe#deaf#dace#cafe#deaf#dace
+#   f|f
+
+# Rejected Inputs:
+#   ace|deb#a#ade#cad
+#   af|fad#caf#afe#fae
+#   abc|
+#   |abc
+#   abc|abc#
+
+input: 'abc|abc#' 
+blank: ' '
+start state: start
+table:
+  start:
+    ['|', '#', ' ']: {R: reject}
+    [a,b,c,d,e,f] : {R: checkFormat}
+    
+  checkFormat:
+    [a,b,c,d,e,f]: R
+    ['|']: {R: arrayFormat}
+    ['#']: {R: reject}
+    
+  arrayFormat:
+    [a,b,c,d,e,f]: R
+    ['|']: {R: reject}
+    ['#']: {R: haveHash}
+    [' ']: {L: checkLetter}
+    
+  haveHash:
+    [a,b,c,d,e,f]: {R: arrayFormat}
+    ['|', '#', ' ']: {R: reject}
+    
+  checkLetter:
+    [' ','|']: {R: reject}
+    [a]: {write: x, L: haveA}
+    [b]: {write: x, L: haveB}
+    [c]: {write: x, L: haveC}
+    [d]: {write: x, L: haveD}
+    [e]: {write: x, L: haveE}
+    [f]: {write: x, L: haveF}
+    ['#']: {L: reset}
+    
+  reset:
+    [a,b,c,d,e,f,'#','|']: L
+    [A]: {write: a, L}
+    [B]: {write: b, L}
+    [C]: {write: c, L}
+    [D]: {write: d, L}
+    [E]: {write: e, L}
+    [F]: {write: f, L}
+    ' ': {R: nextWord}
+    
+  
+  haveA:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchA}
+  haveB:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchB}
+  haveC:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchC}
+  haveD:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchD}
+  haveE:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchE}
+  haveF:
+    [a,b,c,d,e,f, '#']: L
+    '|': {L: searchF}
+    
+  letterFound:
+    ' ': {R: checkFullMatch}
+    [a,b,c,d,e,f,A,B,C,D,E,F,'|']: {R: continue}
+  
+  checkFullMatch:
+    [a,b,c,d,e,f,'#','|']: R
+    [A]: {write: a, R}
+    [B]: {write: b, R}
+    [C]: {write: c, R}
+    [D]: {write: d, R}
+    [E]: {write: e, R}
+    [F]: {write: f, R}
+    [x]: {L: isCompleteMatch}
+    
+  isCompleteMatch:
+    ['#', '|']: {R: accept}
+    [a,b,c,d,e,f]: {R: nextWord}
+    
+  continue:
+    [a,b,c,d,e,f,A,B,C,D,E,F,'#','|']: R
+    x: {L: checkLetter}
+    
+  
+  searchA:
+    a: {write: A, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [b,c,d,e,f]: {R: noMatch}
+  searchB:
+    b: {write: B, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [a,c,d,e,f]: {R: noMatch}
+  searchC:
+    c: {write: C, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [a,b,d,e,f]: {R: noMatch}
+  searchD:
+    d: {write: D, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [a,b,c,e,f]: {R: noMatch}
+  searchE:
+    e: {write: E, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [a,b,c,d,f]: {R: noMatch}
+  searchF:
+    f: {write: F, L: letterFound}
+    [A,B,C,D,E,F]: L
+    [a,b,c,d,e]: {R: noMatch}
+    
+  noMatch:
+    [A]: {write: a, R}
+    [B]: {write: b, R}
+    [C]: {write: c, R}
+    [D]: {write: d, R}
+    [E]: {write: e, R}
+    [F]: {write: f, R}
+    '|': {R: nextWord}
+    
+  nextWord:
+    [a,b,c,d,e,f,'#',x, '|']: R
+    ' ': {L: clearWord}
+  clearWord:
+    [a,b,c,d,e,f,x]: {write: ' ', L}
+    '#': {write: ' ', L: checkLetter}
+    '|': {R: reject}
+  
+  accept:
+    
+  reject:
+    
+    
+    

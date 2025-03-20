@@ -1,0 +1,141 @@
+//LOAD AN EXAMPLE TO TRY
+//then load an input and click play
+
+//Syntax:
+
+//-------CONFIGURATION
+name: problem3
+init: start
+accept: accept
+
+// STARTING POINT, CHECK BASE FORMAT
+start,0,_,_
+	copy,0,_,_,-,-,-
+start,1,_,_
+	copy,1,_,_,-,-,-
+start,-,_,_
+	reject,-,_,_,-,-,-
+
+
+// COPY THE FIRST TERM
+copy,0,_,_
+	copy,_,0,_,>,>,-
+copy,0,0,_
+	copy,_,0,_,>,>,-
+copy,0,1,_
+	copy,_,0,_,>,>,-
+copy,1,_,_
+	copy,_,1,_,>,>,-
+copy,1,0,_
+	copy,_,1,_,>,>,-
+copy,1,1,_
+	copy,_,1,_,>,>,-
+copy,-,_,_
+	hasMinus,_,_,_,>,-,-
+    
+hasMinus,-,_,_
+	reject,_,_,_,-,-,-
+hasMinus,=,_,_
+	reject,_,_,_,-,-,-
+hasMinus,0,_,_
+	skipNumber,0,_,_,>,-,-
+hasMinus,1,_,_
+	skipNumber,1,_,_,>,-,-
+
+// SKIP THE SECOND TERM
+skipNumber,1,_,_
+	skipNumber,1,_,_,>,-,-
+skipNumber,0,_,_
+	skipNumber,0,_,_,>,-,-
+skipNumber,=,_,_
+	subtract,=,_,_,<,<,-
+
+// SUBTRACTION
+subtract,0,0,_ // 0-0 = 0
+    subtract,0,0,0,<,<,<
+subtract,0,1,_ // 1-0 = 1
+    subtract,0,1,1,<,<,<
+subtract,_,1,_ // 1-null = 1
+    subtract,_,_,1,-,<,<
+subtract,_,0,_ // 0-null = 0
+    subtract,_,_,0,-,<,<
+subtract,0,_,_ // null-0 = 0
+    subtract,0,_,0,<,-,<
+subtract,1,1,_ // 1-1 = 0
+	subtract,1,_,0,<,<,<
+subtract,1,0,_ // 0-1 = 1, borrow 1
+    borrow,1,0,1,<,<,<
+subtract,1,_,_ // null-1 = 1, borrow 1
+    borrow,1,_,1,-,-,<
+subtract,_,_,_
+	check,_,_,_,>,-,>
+    
+borrow,_,0,_
+	borrow,_,1,1,-,<,<
+borrow,_,1,_
+	subtract,_,0,0,-,<,<
+borrow,0,0,_
+	borrow,0,1,1,-,<,<
+borrow,0,1,_
+	subtract,0,0,0,-,<,<
+borrow,1,0,_
+	subtract,1,0,0,-,<,<
+
+
+// DONE WITH SUBTRACTION, SO CHECK RESULT
+check,0,_,_
+	check,_,_,_,>,-,-
+check,1,_,_
+	check,_,_,_,>,-,-
+check,1,_,0
+	check,_,_,0,>,-,-
+check,0,_,1
+	check,_,_,1,>,-,-
+check,0,_,0
+	check,_,_,0,>,-,-
+check,1,_,1
+	check,_,_,1,>,-,-
+check,=,_,0
+	gotoEnd,_,_,0,>,-,-
+check,=,_,1
+	gotoEnd,_,_,1,>,-,-
+    
+// GOTO END
+gotoEnd,0,_,0
+	gotoEnd,0,_,0,>,-,>
+gotoEnd,0,_,1
+	gotoEnd,0,_,1,>,-,>
+gotoEnd,1,_,0
+	gotoEnd,1,_,0,>,-,>
+gotoEnd,1,_,1
+	gotoEnd,1,_,1,>,-,>
+gotoEnd,_,_,0
+	gotoEnd,_,_,0,-,-,>
+gotoEnd,0,_,_
+	gotoEnd,0,_,_,>,-,-
+gotoEnd,_,_,1
+	gotoEnd,_,_,1,-,-,>
+gotoEnd,1,_,_
+	gotoEnd,1,_,_,>,-,-
+gotoEnd,_,_,_
+	compare,_,_,_,<,-,<
+    
+// COMPARE THE SUBTRACTION AND THE RESULT
+compare, 1,_,1
+	compare,1,_,1,<,-,<
+compare, 0,_,0
+	compare,0,_,0,<,-,<
+compare, _,_,_
+	accept,_,_,_,-,-,-
+compare, 1,_,0
+	reject,_,_,_,-,-,-
+compare, 0,_,1
+	reject,_,_,_,-,-,-
+compare,_,_,0
+	compare,_,_,0,-,-,<
+compare, _,_,1
+	reject,_,_,1,-,-,-
+compare, 1,_,_
+	reject,1,_,_,-,-,-
+compare, 0,_,_
+	compare,0,_,_,<,-,-
