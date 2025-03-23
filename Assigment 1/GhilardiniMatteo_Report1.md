@@ -70,7 +70,7 @@ This indicates the transition to the `hasMinus` state, where the machine verifie
 
 Once the equation format is validated, the machine transitions into the `skipNumber` state. Here, it skips over the second operand (the number right after the `-` sign) to position the tape heads properly for subtraction.
 
-In the `subtract` state, the machine performs bitwise binary subtraction of the second operand (from tape 1) from the second operand (from tape 2), and write the result in tape 3. The empty string `_` is considered the same as `0` an it applies for the following binary subtraction rules:
+In the `subtract` state, the machine performs bitwise binary subtraction of the second operand (from tape 1) from the first operand (from tape 2), and write the result in tape 3. The empty string `_` is considered the same as `0` an it applies for the following binary subtraction rules:
 - `0 - 0 = 0`
 - `1 - 0 = 1`
 - `1 - 1 = 0`
@@ -84,4 +84,35 @@ In `gotoEnd`, the machine aligns the tape heads at the end of the strings, prepa
 
 The `compare` state performs a bit-by-bit comparison between the value of `c` (tape 1) and the result of `a-b` (tape 3). If all bits match, the machine transitions into the `accept` state, indicating that the input string is a valid binary subtraction expression. If there is any discrepancy — extra 1-bits (`0` and `_` are neglibible), unequal bits, or improper structure — the machine enters the `reject` state.
 
+
+### Problem 4
+
+This Turing Machine operates over the alphabet $\{0,1,/,=\}$ and recognizes strings belonging to the language $\{a/b=c | a,b,c \in \{0,1\}^+ \land c=\lfloor a/b \rfloor \}$, i.e. accepts the string if it corresponds to an integer division in binary.
+
+![problem4](Diagrams/prob4.png)
+
+The machine starts in the `start` state, ensuring the input begins with a valid binary digit (`0` or `1`). If the first character is `/`, the format is invalid and the machine transitions to `reject`.
+
+If the input begins with leading zeros, these are skipped in the `removeZeros` state, after which the machine proceeds to `skip` state, whom iterate the binary string until it reaches the first `/`, marking the end of the first operand `a`. At this point, the machine enters the `copy` state.
+
+In the `copy` state, the machine begins copying the second operand `b` (found after the `/`) from tape 1 to tape 2. Once the `=` symbol is encountered, indicating the start of the third operand `c`, the machine enters the `prepareCompute` state, where it aligns all heads for subtraction (moves tape 1 and 2 to the right-hand-side of the operand).
+
+In `subtract`, the machine performs binary subtraction between the two operands in a similar way that has been done in previous problem, but instead of using the third tape for the result of each bit-by-bit subtraction, write the result in-place in tape 1. This made it necessary to introduce the `take` state, whome
+is responsible to _take out_ the first availlable `1` from the tape 1.
+
+If a `0 - 1` operation occurs, the machine transitions into the `borrow` state, where it traverses left to find a `1` to borrow from (helped by `take` state), adjusting bits accordingly, and continues the subtraction.
+
+The `checkMSB` state checks if the subtraction is complete (and so enter in `subtractAgain` state) or must be interrupted (for example, if the value in tape 1 is less than the one in tape 2), and so must enter `checkResult`state .
+This check is done loooking at the _Most Significant Bit_  of both tapes.
+
+Once a subtraction is complete, the machine transitions into the `increaseCounter` state. This state is responsible to _count how many subtractions has been done_ (i.e. how many times `a` is in `b`).  
+If needed, this state uses `increaseMSB` whom then flips all `1` until the LSB according to binary sum.
+
+When the value of tape 1 becomes smaller than the one in tape 2, the `checkResult` state is responsible for moving the tape heads forward to reach the third operand `c` (i.e. until reach `=`), and then the machine moves into the `goLSB` state to align the heads at the least significant bit of the result for final comparison.
+
+In `compareResults`, the machine performs a comparison between the computed result (on tape 3) and the third operand `c` on tape 1.   
+If all bits match (ignoring leading zeros since `0` and ` ` are considered the same), the machine transitions into the `accept` state. Otherwise the machine enters the `reject` state.
+
+If there is any discrepancy during comparison or if the format is invalid at any point, the machine transitions into the `reject` state.  
+**To limit the complexity of the code, I took advantage of the fact that the tool provided to us to develop these TMs enters the `reject` state whenever a situation is unmanaged, so any unmanaged situation is to be considered that would call to the `reject` state.**
 
