@@ -1,7 +1,14 @@
-//LOAD AN EXAMPLE TO TRY
-//then load an input and click play
+// Author: Matteo Ghilardini
 
-//Syntax:
+// Accepted Inputs:
+//		00000010-1=000001
+//		01010-001010=0000000
+//		1100-10=1010
+
+// Rejected Inputs:
+//		00000010-1=010001
+//		01010-001011=0000000
+//		11000-=11000
 
 //-------CONFIGURATION
 name: problem3
@@ -15,7 +22,6 @@ start,1,_,_
 	copy,1,_,_,-,-,-
 start,-,_,_
 	reject,-,_,_,-,-,-
-
 
 // COPY THE FIRST TERM
 copy,0,_,_
@@ -80,7 +86,10 @@ borrow,0,1,_
 	subtract,0,0,0,-,<,<
 borrow,1,0,_
 	subtract,1,0,0,-,<,<
-
+borrow,1,_,_
+	subtract,1,_,0,<,<,<
+borrow,1,1,_
+	borrow,1,1,1,-,<,<
 
 // DONE WITH SUBTRACTION, SO CHECK RESULT
 check,0,_,_

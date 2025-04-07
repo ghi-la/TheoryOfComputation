@@ -1,16 +1,16 @@
+# Author: Matteo Ghilardini
+
 # Alphabeth {a, ..., f, #, |}
 
 # Accepted Inputs: 
-#   ace|deb#a#ace#cad
-#   dace|cafe#deaf#dace#cafe#deaf#dace
-#   f|f
+#   acc|ac#ffac#acc#cac#aacc
+#   abcdef|abcdef#aabcdef#def
+#   ab|ab
 
 # Rejected Inputs:
-#   ace|deb#a#ade#cad
-#   af|fad#caf#afe#fae
-#   abc|
-#   |abc
-#   abc|abc#
+#   c|ac#bc#cc#dc
+#   cba|a#cba#
+#   fea|efa#afe#aef#cea
 
 input: 'abc|abc#' 
 blank: ' '

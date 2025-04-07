@@ -1,7 +1,14 @@
-//LOAD AN EXAMPLE TO TRY
-//then load an input and click play
+// Author: Matteo Ghilardini
 
-//Syntax:
+// Accepted Inputs:
+//		1010/10=101
+//		1010/11=11
+//		1000010/1010=110
+
+// Rejected Inputs:
+//		1010/10=100
+//		10100/11=11
+//		1000011/1010=111
 
 //-------CONFIGURATION
 name: problem4
@@ -20,7 +27,6 @@ removeZeros,0,_,_
 	removeZeros,_,_,_,>,-,-
 removeZeros,1,_,_
 	skip,1,_,_,>,-,-
-
 
 skip,0,_,_
 	skip,0,_,_,>,-,-

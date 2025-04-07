@@ -1,8 +1,10 @@
-# Alphabeth {0,1}
-# Language {0^n 1^m or 1^m 0^n | m=n}
+# Author: Matteo Ghilardini
 
-# Accepted Inputs: 01 001110 111011010000 010011
-# Rejected Inputs: 0 01110 010 11000
+# Alphabeth {0,1}
+
+# Accepted Inputs: 0011 10101010 00111001
+# Rejected Inputs: 1 11100 0101010
+
 input: '001110' 
 blank: ' '
 start state: start
